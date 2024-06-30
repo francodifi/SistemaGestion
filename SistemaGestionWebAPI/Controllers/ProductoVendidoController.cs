@@ -2,40 +2,42 @@
 using SistemaGestionBussiness;
 using SistemaGestionEntities;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
-namespace SistemaGestionWebAPI.Controllers
+namespace SistemaGestionAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ProductoVendidoController : ControllerBase
     {
         [HttpGet("{id}")]
-        public ActionResult<ProductoVendido> Get(int id)
+        public IActionResult ObtenerProductoVendido(int id)
         {
             var productoVendido = ProductoVendidoBussiness.ObtenerProductoVendido(id);
-            if (productoVendido == null) return NotFound();
+            if (productoVendido == null)
+                return NotFound();
             return Ok(productoVendido);
         }
 
         [HttpGet]
-        public ActionResult<List<ProductoVendido>> Get()
+        public IActionResult ListarProductosVendidos()
         {
-            return Ok(ProductoVendidoBussiness.ListarProductosVendidos());
+            var productosVendidos = ProductoVendidoBussiness.ListarProductosVendidos();
+            return Ok(productosVendidos);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] ProductoVendido productoVendido)
+        public IActionResult CrearProductoVendido([FromBody] ProductoVendido productoVendido)
         {
             ProductoVendidoBussiness.CrearProductoVendido(productoVendido);
-            return CreatedAtAction(nameof(Get), new { id = productoVendido.Id }, productoVendido);
+            return CreatedAtAction(nameof(ObtenerProductoVendido), new { id = productoVendido.Id }, productoVendido);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ProductoVendido productoVendido)
+        public IActionResult ModificarProductoVendido(int id, [FromBody] ProductoVendido productoVendido)
         {
             var existingProductoVendido = ProductoVendidoBussiness.ObtenerProductoVendido(id);
-            if (existingProductoVendido == null) return NotFound();
+            if (existingProductoVendido == null)
+                return NotFound();
 
             productoVendido.Id = id;
             ProductoVendidoBussiness.ModificarProductoVendido(productoVendido);
@@ -43,10 +45,11 @@ namespace SistemaGestionWebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult EliminarProductoVendido(int id)
         {
-            var productoVendido = ProductoVendidoBussiness.ObtenerProductoVendido(id);
-            if (productoVendido == null) return NotFound();
+            var existingProductoVendido = ProductoVendidoBussiness.ObtenerProductoVendido(id);
+            if (existingProductoVendido == null)
+                return NotFound();
 
             ProductoVendidoBussiness.EliminarProductoVendido(id);
             return NoContent();

@@ -2,40 +2,42 @@
 using SistemaGestionBussiness;
 using SistemaGestionEntities;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
-namespace SistemaGestionWebAPI.Controllers
+namespace SistemaGestionAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class VentaController : ControllerBase
     {
         [HttpGet("{id}")]
-        public ActionResult<Venta> Get(int id)
+        public IActionResult ObtenerVenta(int id)
         {
             var venta = VentaBussiness.ObtenerVenta(id);
-            if (venta == null) return NotFound();
+            if (venta == null)
+                return NotFound();
             return Ok(venta);
         }
 
         [HttpGet]
-        public ActionResult<List<Venta>> Get()
+        public IActionResult ListarVentas()
         {
-            return Ok(VentaBussiness.ListarVentas());
+            var ventas = VentaBussiness.ListarVentas();
+            return Ok(ventas);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Venta venta)
+        public IActionResult CrearVenta([FromBody] Venta venta)
         {
             VentaBussiness.CrearVenta(venta);
-            return CreatedAtAction(nameof(Get), new { id = venta.Id }, venta);
+            return CreatedAtAction(nameof(ObtenerVenta), new { id = venta.Id }, venta);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Venta venta)
+        public IActionResult ModificarVenta(int id, [FromBody] Venta venta)
         {
             var existingVenta = VentaBussiness.ObtenerVenta(id);
-            if (existingVenta == null) return NotFound();
+            if (existingVenta == null)
+                return NotFound();
 
             venta.Id = id;
             VentaBussiness.ModificarVenta(venta);
@@ -43,10 +45,11 @@ namespace SistemaGestionWebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult EliminarVenta(int id)
         {
-            var venta = VentaBussiness.ObtenerVenta(id);
-            if (venta == null) return NotFound();
+            var existingVenta = VentaBussiness.ObtenerVenta(id);
+            if (existingVenta == null)
+                return NotFound();
 
             VentaBussiness.EliminarVenta(id);
             return NoContent();

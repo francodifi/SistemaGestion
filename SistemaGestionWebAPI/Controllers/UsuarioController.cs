@@ -2,40 +2,42 @@
 using SistemaGestionBussiness;
 using SistemaGestionEntities;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
-namespace SistemaGestionWebAPI.Controllers
+namespace SistemaGestionAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class UsuarioController : ControllerBase
     {
         [HttpGet("{id}")]
-        public ActionResult<Usuario> Get(int id)
+        public IActionResult ObtenerUsuario(int id)
         {
             var usuario = UsuarioBussiness.ObtenerUsuario(id);
-            if (usuario == null) return NotFound();
+            if (usuario == null)
+                return NotFound();
             return Ok(usuario);
         }
 
         [HttpGet]
-        public ActionResult<List<Usuario>> Get()
+        public IActionResult ListarUsuarios()
         {
-            return Ok(UsuarioBussiness.ListarUsuarios());
+            var usuarios = UsuarioBussiness.ListarUsuarios();
+            return Ok(usuarios);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Usuario usuario)
+        public IActionResult CrearUsuario([FromBody] Usuario usuario)
         {
             UsuarioBussiness.CrearUsuario(usuario);
-            return CreatedAtAction(nameof(Get), new { id = usuario.Id }, usuario);
+            return CreatedAtAction(nameof(ObtenerUsuario), new { id = usuario.Id }, usuario);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Usuario usuario)
+        public IActionResult ModificarUsuario(int id, [FromBody] Usuario usuario)
         {
             var existingUsuario = UsuarioBussiness.ObtenerUsuario(id);
-            if (existingUsuario == null) return NotFound();
+            if (existingUsuario == null)
+                return NotFound();
 
             usuario.Id = id;
             UsuarioBussiness.ModificarUsuario(usuario);
@@ -43,10 +45,11 @@ namespace SistemaGestionWebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult EliminarUsuario(int id)
         {
-            var usuario = UsuarioBussiness.ObtenerUsuario(id);
-            if (usuario == null) return NotFound();
+            var existingUsuario = UsuarioBussiness.ObtenerUsuario(id);
+            if (existingUsuario == null)
+                return NotFound();
 
             UsuarioBussiness.EliminarUsuario(id);
             return NoContent();

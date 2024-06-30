@@ -2,40 +2,42 @@
 using SistemaGestionBussiness;
 using SistemaGestionEntities;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
-namespace SistemaGestionWebAPI.Controllers
+namespace SistemaGestionAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ProductoController : ControllerBase
     {
         [HttpGet("{id}")]
-        public ActionResult<Producto> Get(int id)
+        public IActionResult ObtenerProducto(int id)
         {
             var producto = ProductoBussiness.ObtenerProducto(id);
-            if (producto == null) return NotFound();
+            if (producto == null)
+                return NotFound();
             return Ok(producto);
         }
 
         [HttpGet]
-        public ActionResult<List<Producto>> Get()
+        public IActionResult ListarProductos()
         {
-            return Ok(ProductoBussiness.ListarProductos());
+            var productos = ProductoBussiness.ListarProductos();
+            return Ok(productos);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Producto producto)
+        public IActionResult CrearProducto([FromBody] Producto producto)
         {
             ProductoBussiness.CrearProducto(producto);
-            return CreatedAtAction(nameof(Get), new { id = producto.Id }, producto);
+            return CreatedAtAction(nameof(ObtenerProducto), new { id = producto.Id }, producto);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Producto producto)
+        public IActionResult ModificarProducto(int id, [FromBody] Producto producto)
         {
             var existingProducto = ProductoBussiness.ObtenerProducto(id);
-            if (existingProducto == null) return NotFound();
+            if (existingProducto == null)
+                return NotFound();
 
             producto.Id = id;
             ProductoBussiness.ModificarProducto(producto);
@@ -43,10 +45,11 @@ namespace SistemaGestionWebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult EliminarProducto(int id)
         {
-            var producto = ProductoBussiness.ObtenerProducto(id);
-            if (producto == null) return NotFound();
+            var existingProducto = ProductoBussiness.ObtenerProducto(id);
+            if (existingProducto == null)
+                return NotFound();
 
             ProductoBussiness.EliminarProducto(id);
             return NoContent();
