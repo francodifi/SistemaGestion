@@ -3,7 +3,7 @@ using SistemaGestionBussiness;
 using SistemaGestionEntities;
 using System.Collections.Generic;
 
-namespace SistemaGestionAPI.Controllers
+namespace SistemaGestionWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
